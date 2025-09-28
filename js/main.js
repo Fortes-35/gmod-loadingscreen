@@ -7,6 +7,7 @@ var totalCalled = false;
 var downloadingFileCalled = false;
 var percentage = 0;
 
+// ===================== GMod функции =====================
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode, playersOnline) {
   isGmod = true;
   if (!isTest) loadAll();
@@ -15,17 +16,18 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
 
   if(Config.enableMap){
     $("#map").html("Карта: " + mapname).animate({opacity:1},500);
+  }
+
+  if(Config.enableOnline){
     $("#online").html("Онлайн: " + playersOnline).animate({opacity:1},500);
   }
 
+  // Смена фонового изображения плавно
   if(Config.backgroundImages && Config.backgroundImages.length > 0){
-    var bgIndex = 0;
-    setInterval(()=>{
-      bgIndex = (bgIndex+1) % Config.backgroundImages.length;
-      $(".background").fadeOut(1500, function(){
-        $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(1500);
-      });
-    }, 8000);
+    var bgIndex = Math.floor(Math.random() * Config.backgroundImages.length);
+    $(".background").fadeOut(2000, function() {
+      $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(2000);
+    });
   }
 }
 
@@ -47,6 +49,7 @@ function SetStatusChanged(status){
   $(".history-item").each((i,el)=>{if(i>10) $(el).remove(); $(el).css("opacity",""+(1-i*0.1));});
 }
 
+// ===================== Внешние функции =====================
 function loadAll(){ $("nav, main").fadeIn(); setTimeout(()=>{ if(downloadingFileCalled) announce("Вы впервые подключаетесь к этому серверу! - Пожалуйста, дождитесь загрузки файлов...",true); },10000); }
 function loadBackground(){ if(Config.backgroundImages && Config.backgroundImages.length>0){ $(".background").css("background-image",'url("images/'+Config.backgroundImages[0]+'")'); } }
 function setLoad(percentage){ $(".overhaul").css("left",percentage+"%"); }
@@ -54,6 +57,7 @@ var permanent=false;
 function announce(message,ispermanent){ if(Config.enableAnnouncements && !permanent){ $("#announcement").hide().html(message).fadeIn(); } if(ispermanent) permanent=true; }
 function debug(message){ if(Config.enableDebug){ console.log(message); $("#debug").prepend(message+"<br>"); } }
 
+// ===================== Инициализация =====================
 $(document).ready(function(){
   loadBackground();
 
@@ -71,7 +75,7 @@ $(document).ready(function(){
     if(!isGmod){
       isTest=true;
       loadAll();
-      GameDetails("Название сервера","URL сервера","Карта1","Макс. игроков","Gamemode","5");
+      GameDetails("Название сервера","URL сервера","Карта1","Макс. игроков","SteamID","Gamemode","5");
       var totalTestFiles=100;
       SetFilesTotal(totalTestFiles);
       var needed=totalTestFiles;
