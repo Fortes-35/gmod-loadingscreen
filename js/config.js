@@ -15,7 +15,7 @@ Config.enableAnnouncements = true;
 // Сообщения для объявлений
 Config.announceMessages = [
   "Приятной игры!",
-  "Этот экран загрузки создан Exsite."
+  "Этот экран загрузки создан Fortes."
 ];
 
 // Интервал показа сообщений (мс)

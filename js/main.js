@@ -42,9 +42,9 @@ function DownloadingFile(filename){
 
 var allow_increment=true;
 function SetStatusChanged(status){
-  if(status==="Workshop Complete"){ allow_increment=false; setLoad(80); $("#history").prepend('<div class="history-item">Загрузка Workshop завершена</div>'); }
-  else if(status==="Client info sent!") { allow_increment=false; setLoad(95); $("#history").prepend('<div class="history-item">Информация клиента отправлена</div>'); }
-  else if(status==="Starting Lua...") { setLoad(100); $("#history").prepend('<div class="history-item">Запуск Lua...</div>'); }
+  if(status==="Workshop завершена"){ allow_increment=false; setLoad(80); $("#history").prepend('<div class="history-item">Загрузка Workshop завершена</div>'); }
+  else if(status==="Информация о клиенте отправлена!") { allow_increment=false; setLoad(95); $("#history").prepend('<div class="history-item">Информация клиента отправлена</div>'); }
+  else if(status==="Запуск Lua...") { setLoad(100); $("#history").prepend('<div class="history-item">Запуск Lua...</div>'); }
   else { $("#history").prepend('<div class="history-item">'+status+'</div>'); if(allow_increment){percentage+=0.1; setLoad(percentage);} }
   $(".history-item").each((i,el)=>{if(i>10) $(el).remove(); $(el).css("opacity",""+(1-i*0.1));});
 }
