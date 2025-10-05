@@ -22,7 +22,7 @@ Config.announceMessages = [
 Config.announcementLength = 3000;
 
 // Фоновые картинки
-Config.backgroundImages = ["default1.jpg","default2.jpg","default3.jpg"];
+Config.backgroundImages = ["default1.jpg","default2.jpg","default3.jpg","default4.jpg","default5.jpg"];
 
 // Включение debug сообщений
 Config.enableDebug = false;
