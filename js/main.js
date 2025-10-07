@@ -75,12 +75,14 @@ function loadBackground(){
 
 function setLoad(percent){
     if(percent < 0) percent = 0;
+    if(percent > 100) percent = 100;
 
     $(".overhaul").css({
-        transform: "translateX(" + percent + "%)",
-        opacity: 1 - percent/100 
+        transform: "translateX(" + (percent-50) + "%)",
+        opacity: 1 - percent/100
     });
 }
+
 
 
 
