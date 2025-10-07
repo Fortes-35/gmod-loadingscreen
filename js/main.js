@@ -126,20 +126,6 @@ $(document).ready(function(){
         }
     }
 
-    // === Смена фоновых изображений каждые 30 секунд, без изменения размера ===
-    if(Config.backgroundImages && Config.backgroundImages.length>0){
-        const bgDiv = $(".background");
-        let bgIndex = 0;
-
-        setInterval(() => {
-            bgIndex = (bgIndex + 1) % Config.backgroundImages.length;
-            bgDiv.fadeOut(2000, function(){
-                bgDiv.css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")');
-                bgDiv.fadeIn(2000);
-            });
-        }, 30000); // 30 секунд
-    }
-
     // === Тестирование режима если не GMod ===
     setTimeout(()=>{
         if(!isGmod){
