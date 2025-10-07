@@ -14,7 +14,6 @@ nav {
   background-color: rgba(0, 0, 0, 0.5);
   padding: 1%;
   overflow: auto;
-  color: white;
 }
 
 h2 {
@@ -69,8 +68,9 @@ h1 {
   width: 100%;
   height: 100%;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.4);
-  transition-duration: 1s;
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: left 2s linear;
+  left: 0;
 }
 
 .title {

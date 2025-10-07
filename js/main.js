@@ -85,7 +85,7 @@ function loadBackground(){
 }
 
 function setLoad(percentage){ 
-    $(".overhaul").css("left",percentage+"%"); 
+    $(".overhaul").css("left", percentage + "%"); 
 }
 
 var permanent=false;
@@ -124,6 +124,20 @@ $(document).ready(function(){
                 if(i>Config.announceMessages.length-1)i=0; 
             }, Config.announcementLength);
         }
+    }
+
+    // === Смена фоновых изображений каждые 30 секунд ===
+    if(Config.backgroundImages && Config.backgroundImages.length>0){
+        const bgDiv = $(".background");
+        let bgIndex = 0;
+
+        setInterval(() => {
+            bgIndex = (bgIndex + 1) % Config.backgroundImages.length;
+            bgDiv.fadeOut(2000, function(){
+                bgDiv.css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")');
+                bgDiv.fadeIn(2000);
+            });
+        }, 30000);
     }
 
     // === Тестирование режима если не GMod ===
