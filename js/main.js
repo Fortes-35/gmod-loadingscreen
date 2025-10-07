@@ -67,10 +67,13 @@ function loadAll(){
     },10000);
 }
 
-function loadBackground(){
-    if(Config.backgroundImages && Config.backgroundImages.length>0){
-        $(".background").css("background-image",'url("images/'+Config.backgroundImages[0]+'")');
-    }
+var lastPercentage = 0;
+
+function setLoad(p){
+    // Запрещаем уходить влево
+    if(p < lastPercentage) p = lastPercentage;
+    $(".overhaul").css("left", p + "%");
+    lastPercentage = p;
 }
 
 function setLoad(p){
