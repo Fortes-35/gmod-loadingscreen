@@ -78,7 +78,7 @@ function setLoad(percent){
 
     $(".overhaul").css({
         transform: "translateX(" + percent + "%)",
-        opacity: 1 - percent/100
+        opacity: 1 - percent/100 
     });
 }
 
