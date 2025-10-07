@@ -1,24 +1,22 @@
 "use strict";
 
 var isGmod = false;
-var isTest = false;
+var percentage = 0;
 var totalFiles = 50;
 var totalCalled = false;
 var downloadingFileCalled = false;
-var percentage = 0;
+var allow_increment = true;
 
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode, playersOnline) {
     isGmod = true;
-    if (!isTest) loadAll();
+    $("nav, main").fadeIn();
 
     $("#title").html(Config.title || servername).animate({opacity:1},500);
+    if(Config.enableMap) $("#map").html("Карта: " + mapname).animate({opacity:1},500);
+    if(Config.enableOnline) $("#online").html("Онлайн: " + playersOnline).animate({opacity:1},500);
 
-    if(Config.enableMap){
-        $("#map").html("Карта: " + mapname).animate({opacity:1},500);
-    }
-    if(Config.enableOnline){
-        $("#online").html("Онлайн: " + playersOnline).animate({opacity:1},500);
-    }
+    // Скрываем изначальный текст "Загрузка..."
+    $("#loading-text").fadeOut(500);
 }
 
 function SetFilesTotal(total){
@@ -36,10 +34,6 @@ function SetFilesNeeded(needed){
 function DownloadingFile(filename){
     filename = filename.replace("'", "").replace("?","");
     downloadingFileCalled = true;
-
-    // скрываем "Загрузка..." когда начинается реальная загрузка файлов
-    $("#loading-text").fadeOut(300);
-
     $("#history").prepend('<div class="history-item">'+filename+'</div>');
     $(".history-item").each((i,el)=>{
         if(i>10) $(el).remove();
@@ -47,64 +41,28 @@ function DownloadingFile(filename){
     });
 }
 
-var allow_increment = true;
 function SetStatusChanged(status){
-    if(downloadingFileCalled){
-        $("#history").prepend('<div class="history-item">'+status+'</div>');
-        $(".history-item").each((i,el)=>{
-            if(i>10) $(el).remove();
-            $(el).css("opacity",""+(1-i*0.1));
-        });
-    }
+    $("#history").prepend('<div class="history-item">'+status+'</div>');
+    $(".history-item").each((i,el)=>{
+        if(i>10) $(el).remove();
+        $(el).css("opacity",""+(1-i*0.1));
+    });
 
-    if(status==="Workshop завершена"){ allow_increment=false; setLoad(80); }
-    else if(status==="Информация о клиенте отправлена!") { allow_increment=false; setLoad(95); }
-    else if(status==="Запуск Lua...") { setLoad(100); }
+    if(status==="Workshop Complete"){ allow_increment=false; setLoad(80); }
+    else if(status==="Client info sent!"){ allow_increment=false; setLoad(95); }
+    else if(status==="Starting Lua..."){ setLoad(100); }
     else { if(allow_increment){ percentage += 0.1; setLoad(percentage); } }
 }
 
-function loadAll(){
-    $("nav, main").fadeIn();
-}
-
-function loadBackground(){
-    if(Config.backgroundImages && Config.backgroundImages.length>0){
-        $(".background").css("background-image",'url("images/'+Config.backgroundImages[0]+'")');
-    }
-}
-
-var percentage = 0;
-var maxPercentage = 0;
-
+// Двигаем overlay вправо и уменьшаем opacity
 function setLoad(p){
-    if(p < 0) p = 0;
-    if(p > 100) p = 100;
-
-    if(p > maxPercentage) maxPercentage = p;
-
     $(".overhaul").css({
-        transform: "translateX(" + (maxPercentage-50) + "%)",
-        opacity: 1 - maxPercentage/100
+        transform: "translateX("+p+"%)",
+        opacity: 1 - p/100
     });
-
-    $(".loading-box").css("width", maxPercentage + "%");
-}
-
-
-
-
-
-var permanent = false;
-function announce(message, ispermanent){
-    if(Config.enableAnnouncements && !permanent){
-        $("#announcement").hide().html(message).fadeIn();
-    }
-    if(ispermanent) permanent=true;
 }
 
 $(document).ready(function(){
-    loadBackground();
-
     // Спиннер
     var spinner = $(".spinner");
     if(spinner.length){
@@ -114,44 +72,27 @@ $(document).ready(function(){
 
     // Объявления
     if(Config.announceMessages && Config.enableAnnouncements && Config.announcementLength){
-        if(Config.announceMessages.length>0){
-            var i=0;
-            setInterval(()=>{ 
-                announce(Config.announceMessages[i]); 
-                i++; 
-                if(i>Config.announceMessages.length-1)i=0; 
-            }, Config.announcementLength);
-        }
-    }
-
-    // Смена фоновых изображений каждые 15 секунд
-    if(Config.backgroundImages && Config.backgroundImages.length>0){
-        let bgIndex = 0;
+        let i=0;
         setInterval(()=>{
-            bgIndex = (bgIndex+1) % Config.backgroundImages.length;
-            $(".background").fadeOut(2000, function(){
-                $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(2000);
-            });
-        }, 15000);
+            $("#announcement").hide().html(Config.announceMessages[i]).fadeIn();
+            i++; if(i>=Config.announceMessages.length) i=0;
+        }, Config.announcementLength);
     }
 
     // Тестовый режим
     setTimeout(()=>{
         if(!isGmod){
-            isTest=true;
-            loadAll();
-            GameDetails("Название сервера","URL сервера","Карта1","Макс. игроков","SteamID","Gamemode","5");
-            var totalTestFiles=100;
-            SetFilesTotal(totalTestFiles);
-            var needed=totalTestFiles;
-            setInterval(()=>{
+            GameDetails("Server Name","URL","Map","Max","SteamID","Gamemode","5");
+            SetFilesTotal(20);
+            let needed=20;
+            let interval = setInterval(()=>{
                 if(needed>0){
                     needed--;
                     SetFilesNeeded(needed);
                     DownloadingFile("Файл "+needed);
-                }
+                } else clearInterval(interval);
             },500);
-            SetStatusChanged("Тестирование..");
+            SetStatusChanged("Загрузка...");
         }
     },1000);
 });
