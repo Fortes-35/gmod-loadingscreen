@@ -73,15 +73,23 @@ function loadBackground(){
     }
 }
 
-function setLoad(percent){
-    if(percent < 0) percent = 0;
-    if(percent > 100) percent = 100;
+var percentage = 0;
+var maxPercentage = 0;
+
+function setLoad(p){
+    if(p < 0) p = 0;
+    if(p > 100) p = 100;
+
+    if(p > maxPercentage) maxPercentage = p;
 
     $(".overhaul").css({
-        transform: "translateX(" + (percent-50) + "%)",
-        opacity: 1 - percent/100
+        transform: "translateX(" + (maxPercentage-50) + "%)",
+        opacity: 1 - maxPercentage/100
     });
+
+    $(".loading-box").css("width", maxPercentage + "%");
 }
+
 
 
 
