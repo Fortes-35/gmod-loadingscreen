@@ -24,6 +24,7 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
 function SetFilesTotal(total){
     totalCalled = true;
     totalFiles = total;
+    debug("Всего файлов: "+total);
 }
 
 function SetFilesNeeded(needed){
@@ -33,16 +34,19 @@ function SetFilesNeeded(needed){
     }
 }
 
-// только реальные загружаемые файлы
 function DownloadingFile(filename){
-    if(!filename.toLowerCase().includes("file")) return; // пропускаем тестовые
+    if(!filename) return; // Только реальные файлы
+    downloadingFileCalled = true;
     $("#history").prepend('<div class="history-item">'+filename+'</div>');
+    $("#status").text("Загрузка: " + filename).show();
 }
 
 function SetStatusChanged(status){
-    if(status==="Workshop Complete"){ setLoad(100); }
-    else if(status==="Client info sent!") { setLoad(100); }
-    else if(status==="Starting Lua...") { setLoad(100); }
+    debug(status);
+    if(status==="Workshop Complete" || status==="Client info sent!" || status==="Starting Lua..."){
+        $("#status").text("Загрузка завершена!");
+        setLoad(100);
+    }
 }
 
 function loadAll(){
@@ -56,36 +60,26 @@ function loadBackground(){
 }
 
 function setLoad(p){
-    // Двигаем прямоугольник от центра вправо
-    $(".overhaul").css("left", 50 + p/2 + "%"); // 50% старт, p% смещение вправо
+    $(".overhaul").css("left", p+"%");
 }
 
-var permanent = false;
-function announce(message, ispermanent){
-    if(Config.enableAnnouncements && !permanent){
-        $("#announcement").hide().html(message).fadeIn();
+function debug(message){
+    if(Config.enableDebug){
+        console.log(message);
     }
-    if(ispermanent) permanent=true;
 }
 
 $(document).ready(function(){
     loadBackground();
 
-    // спиннер
-    $(".spinner").attr("src","images/"+Config.spinnerImage)
-                 .css({width:Config.spinnerSize+"px", height:Config.spinnerSize+"px"});
-
-    // объявления
-    if(Config.announceMessages && Config.enableAnnouncements && Config.announcementLength){
-        var i=0;
-        setInterval(()=>{ 
-            announce(Config.announceMessages[i]); 
-            i++; 
-            if(i>Config.announceMessages.length-1)i=0; 
-        }, Config.announcementLength);
+    // Спиннер
+    var spinner = $(".spinner");
+    if(spinner.length){
+        spinner.attr("src","images/"+Config.spinnerImage)
+               .css({width:Config.spinnerSize+"px",height:Config.spinnerSize+"px"});
     }
 
-    // смена фоновых изображений каждые 15 секунд
+    // Смена фоновых изображений каждые 15 секунд
     if(Config.backgroundImages && Config.backgroundImages.length>0){
         let bgIndex = 0;
         setInterval(()=>{
@@ -95,23 +89,4 @@ $(document).ready(function(){
             });
         }, 15000);
     }
-
-    // тестовый режим
-    setTimeout(()=>{
-        if(!isGmod){
-            isTest=true;
-            loadAll();
-            GameDetails("Название сервера","URL сервера","Карта1","Макс. игроков","SteamID","Gamemode","5");
-            var totalTestFiles=100;
-            SetFilesTotal(totalTestFiles);
-            var needed=totalTestFiles;
-            setInterval(()=>{
-                if(needed>0){
-                    needed--;
-                    SetFilesNeeded(needed);
-                    DownloadingFile("Файл "+needed);
-                }
-            },500);
-        }
-    },1000);
 });
