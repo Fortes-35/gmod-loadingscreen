@@ -35,8 +35,9 @@ function SetFilesNeeded(needed){
 }
 
 function DownloadingFile(filename){
-    // Появление только при реальной загрузке Workshop и т.п.
+    // Показываем только, когда реально грузится
     if(filename && filename.length>0){
+        downloadingFileCalled = true;
         $("#history").prepend('<div class="history-item">'+filename+'</div>');
         $(".history-item").each((i,el)=>{
             if(i>10) $(el).remove();
@@ -45,19 +46,16 @@ function DownloadingFile(filename){
     }
 }
 
-var allow_increment = true;
 function SetStatusChanged(status){
-    if(status==="Workshop завершена"){ allow_increment=false; setLoad(100); }
-    else if(status==="Информация о клиенте отправлена!") { allow_increment=false; setLoad(100); }
-    else if(status==="Запуск Lua...") { setLoad(100); }
-    else { if(allow_increment){ percentage += 0.1; setLoad(percentage); } }
-
-    // Появление статусов только при загрузке
     $("#history").prepend('<div class="history-item">'+status+'</div>');
     $(".history-item").each((i,el)=>{
         if(i>10) $(el).remove();
         $(el).css("opacity",""+(1-i*0.1));
     });
+
+    if(status==="Workshop завершена"){ setLoad(100); }
+    else if(status==="Информация о клиенте отправлена!") { setLoad(100); }
+    else if(status==="Запуск Lua...") { setLoad(100); }
 }
 
 function loadAll(){
@@ -67,17 +65,15 @@ function loadAll(){
     },10000);
 }
 
-var lastPercentage = 0;
-
-function setLoad(p){
-    // Запрещаем уходить влево
-    if(p < lastPercentage) p = lastPercentage;
-    $(".overhaul").css("left", p + "%");
-    lastPercentage = p;
+function loadBackground(){
+    if(Config.backgroundImages && Config.backgroundImages.length>0){
+        $(".background").css("background-image",'url("images/'+Config.backgroundImages[0]+'")');
+    }
 }
 
 function setLoad(p){
-    $(".overhaul").css("left", p+"%");
+    // Прямоугольник двигается только вправо
+    $(".overhaul").css("left", Math.max(0,p)+"%");
 }
 
 var permanent = false;
@@ -128,7 +124,7 @@ $(document).ready(function(){
         }, 15000);
     }
 
-    // Режим теста
+    // Тестовый режим
     setTimeout(()=>{
         if(!isGmod){
             isTest=true;
