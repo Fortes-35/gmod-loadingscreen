@@ -30,3 +30,4 @@ Config.enableDebug = false;
 // Спиннер
 Config.spinnerImage = "spinner.png";
 Config.spinnerSize = 100;
+Config.spinnerSpeed = 2;

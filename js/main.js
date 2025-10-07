@@ -34,18 +34,30 @@ function SetFilesNeeded(needed){
     }
 }
 
+function DownloadingFile(filename){
+    // Появление только при реальной загрузке Workshop и т.п.
+    if(filename && filename.length>0){
+        $("#history").prepend('<div class="history-item">'+filename+'</div>');
+        $(".history-item").each((i,el)=>{
+            if(i>10) $(el).remove();
+            $(el).css("opacity",""+(1-i*0.1));
+        });
+    }
+}
+
 var allow_increment = true;
 function SetStatusChanged(status){
+    if(status==="Workshop завершена"){ allow_increment=false; setLoad(100); }
+    else if(status==="Информация о клиенте отправлена!") { allow_increment=false; setLoad(100); }
+    else if(status==="Запуск Lua...") { setLoad(100); }
+    else { if(allow_increment){ percentage += 0.1; setLoad(percentage); } }
+
+    // Появление статусов только при загрузке
     $("#history").prepend('<div class="history-item">'+status+'</div>');
     $(".history-item").each((i,el)=>{
         if(i>10) $(el).remove();
         $(el).css("opacity",""+(1-i*0.1));
     });
-
-    if(status==="Workshop завершена"){ allow_increment=false; setLoad(80); }
-    else if(status==="Информация о клиенте отправлена!") { allow_increment=false; setLoad(95); }
-    else if(status==="Запуск Lua...") { setLoad(100); }
-    else { if(allow_increment){ percentage += 0.1; setLoad(percentage); } }
 }
 
 function loadAll(){
@@ -107,8 +119,8 @@ $(document).ready(function(){
         let bgIndex = 0;
         setInterval(()=>{
             bgIndex = (bgIndex+1) % Config.backgroundImages.length;
-            $(".background").fadeOut(2000, function(){
-                $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(2000);
+            $(".background").fadeOut(1000, function(){
+                $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(1000);
             });
         }, 15000);
     }
