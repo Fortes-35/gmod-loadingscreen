@@ -72,6 +72,7 @@ function loadBackground(){
 }
 
 function setLoad(p){
+    // Синхронизирует с загрузкой GMod
     $(".overhaul").css("left", p+"%");
 }
 
@@ -112,7 +113,7 @@ $(document).ready(function(){
         }
     }
 
-    // Смена фоновых изображений каждые 30 секунд
+    // Плавная смена фонов каждые 30 сек
     if(Config.backgroundImages && Config.backgroundImages.length>0){
         let bgIndex = 0;
         setInterval(()=>{
@@ -123,12 +124,12 @@ $(document).ready(function(){
         }, 30000);
     }
 
-    // Режим теста
+    // Тестовый режим (если не GMod)
     setTimeout(()=>{
         if(!isGmod){
             isTest=true;
             loadAll();
-            GameDetails("Название сервера","URL сервера","Карта1","Макс. игроков","SteamID","Gamemode","5");
+            GameDetails("Test Server","localhost","gm_construct","32","STEAM_0:1:111111","sandbox","12");
             var totalTestFiles=100;
             SetFilesTotal(totalTestFiles);
             var needed=totalTestFiles;
@@ -138,8 +139,8 @@ $(document).ready(function(){
                     SetFilesNeeded(needed);
                     DownloadingFile("Файл "+needed);
                 }
-            },500);
-            SetStatusChanged("Тестирование..");
+            },300);
+            SetStatusChanged("Загрузка...");
         }
     },1000);
 });
