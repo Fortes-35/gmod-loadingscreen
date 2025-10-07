@@ -1,90 +1,89 @@
 body {
-  font-family: "Ubuntu Mono", "Arial";
+  font-family: "Ubuntu Mono","Arial";
   margin: 0;
   color: white;
   background-color: black;
 }
 
-nav,
-main {
-  display: none;
-}
+nav, main { display: none; }
 
 nav {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,0,0,0.5);
   padding: 1%;
   overflow: auto;
 }
 
-h2 { font-size: 1.5em; margin: 0; }
-h1 { margin-top: 10px; }
+h2 { font-size:1.5em; margin:0; }
+h1 { margin-top:10px; }
 
-#title, #map, #online { display: block; opacity: 0; color: white; }
+#title,#map,#online { display:block; opacity:0; color:white; }
 
-#serverinfo { display: flex; justify-content: space-between; width: 100%; }
-#announcement { position: absolute; width: 98%; text-align: center; }
-#history { position: absolute; text-align: center; width: 100%; color: rgb(240,240,240); }
+#serverinfo { display:flex; justify-content:space-between; width:100%; }
+#announcement { position:absolute; width:98%; text-align:center; }
+#history { position:absolute; text-align:center; width:100%; color:rgb(240,240,240); }
 
 .background {
-  z-index: -2;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  background-image: url("../images/default1.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
+  z-index:-2;
+  width:100%;
+  height:100%;
+  position:fixed;
+  background-image:url("../images/default1.jpg");
+  background-repeat:no-repeat;
+  background-size:cover;
   transition: background-image 2s ease-in-out;
 }
 
 .overhaul {
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  background-color: rgba(0,0,0,0.5);
-  transform: translateX(0%);
-  transition: transform 0.3s linear;
+  z-index:-1;
+  width:100%;
+  height:100%;
+  position:fixed;
+  background-color:rgba(0,0,0,0.5);
+  transform:translateX(0%);
+  transition: transform 0.5s linear;
 }
 
 .title {
-  text-align: center;
-  top: 40%;
-  width: 100%;
-  position: absolute;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+  text-align:center;
+  top:40%;
+  width:100%;
+  position:absolute;
+  text-shadow:1px 1px 1px rgba(0,0,0,0.8);
 }
 
 .under-nav {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 70%;
-  height: 40px;
+  position:fixed;
+  left:0;
+  bottom:0;
+  width:70%;
+  height:40px;
   background-color: rgba(0,0,0,0.5);
-  z-index: 2;
+  z-index:2;
 }
 
 .loading-box {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  width: 30%;
-  height: 40px;
+  position:fixed;
+  right:0;
+  bottom:0;
+  width:30%;
+  height:40px;
   background-color: rgba(0,0,0,0.5);
-  z-index: 2;
+  z-index:2;
 }
 
 .spinner {
-  position: absolute;
-  bottom: 80px; 
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 100px;
+  position:absolute;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  width:100px;
+  height:100px;
   animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: translateX(-50%) rotate(0deg); }
-  100% { transform: translateX(-50%) rotate(360deg); }
+  0% { transform:translateX(-50%) rotate(0deg); }
+  100% { transform:translateX(-50%) rotate(360deg); }
 }
+
+.history-item { font-size: 14px; margin-top:2px; }
