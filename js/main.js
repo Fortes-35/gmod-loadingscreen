@@ -24,7 +24,6 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
 function SetFilesTotal(total){
     totalCalled = true;
     totalFiles = total;
-    debug("Всего файлов: "+total);
 }
 
 function SetFilesNeeded(needed){
@@ -34,35 +33,20 @@ function SetFilesNeeded(needed){
     }
 }
 
+// только реальные загружаемые файлы
 function DownloadingFile(filename){
-    // Показываем только, когда реально грузится
-    if(filename && filename.length>0){
-        downloadingFileCalled = true;
-        $("#history").prepend('<div class="history-item">'+filename+'</div>');
-        $(".history-item").each((i,el)=>{
-            if(i>10) $(el).remove();
-            $(el).css("opacity",""+(1-i*0.1));
-        });
-    }
+    if(!filename.toLowerCase().includes("file")) return; // пропускаем тестовые
+    $("#history").prepend('<div class="history-item">'+filename+'</div>');
 }
 
 function SetStatusChanged(status){
-    $("#history").prepend('<div class="history-item">'+status+'</div>');
-    $(".history-item").each((i,el)=>{
-        if(i>10) $(el).remove();
-        $(el).css("opacity",""+(1-i*0.1));
-    });
-
-    if(status==="Workshop завершена"){ setLoad(100); }
-    else if(status==="Информация о клиенте отправлена!") { setLoad(100); }
-    else if(status==="Запуск Lua...") { setLoad(100); }
+    if(status==="Workshop Complete"){ setLoad(100); }
+    else if(status==="Client info sent!") { setLoad(100); }
+    else if(status==="Starting Lua...") { setLoad(100); }
 }
 
 function loadAll(){
     $("nav, main").fadeIn();
-    setTimeout(()=>{
-        if(downloadingFileCalled) announce("Вы впервые подключаетесь к этому серверу! - Пожалуйста, дождитесь загрузки файлов...", true);
-    },10000);
 }
 
 function loadBackground(){
@@ -72,8 +56,8 @@ function loadBackground(){
 }
 
 function setLoad(p){
-    // Прямоугольник двигается только вправо
-    $(".overhaul").css("left", Math.max(0,p)+"%");
+    // Двигаем прямоугольник от центра вправо
+    $(".overhaul").css("left", 50 + p/2 + "%"); // 50% старт, p% смещение вправо
 }
 
 var permanent = false;
@@ -84,36 +68,24 @@ function announce(message, ispermanent){
     if(ispermanent) permanent=true;
 }
 
-function debug(message){
-    if(Config.enableDebug){
-        console.log(message);
-        $("#debug").prepend(message+"<br>");
-    }
-}
-
 $(document).ready(function(){
     loadBackground();
 
-    // Спиннер
-    var spinner = $(".spinner");
-    if(spinner.length){
-        spinner.attr("src","images/"+Config.spinnerImage)
-               .css({width:Config.spinnerSize+"px",height:Config.spinnerSize+"px"});
-    }
+    // спиннер
+    $(".spinner").attr("src","images/"+Config.spinnerImage)
+                 .css({width:Config.spinnerSize+"px", height:Config.spinnerSize+"px"});
 
-    // Объявления
+    // объявления
     if(Config.announceMessages && Config.enableAnnouncements && Config.announcementLength){
-        if(Config.announceMessages.length>0){
-            var i=0;
-            setInterval(()=>{ 
-                announce(Config.announceMessages[i]); 
-                i++; 
-                if(i>Config.announceMessages.length-1)i=0; 
-            }, Config.announcementLength);
-        }
+        var i=0;
+        setInterval(()=>{ 
+            announce(Config.announceMessages[i]); 
+            i++; 
+            if(i>Config.announceMessages.length-1)i=0; 
+        }, Config.announcementLength);
     }
 
-    // Смена фоновых изображений каждые 15 секунд
+    // смена фоновых изображений каждые 15 секунд
     if(Config.backgroundImages && Config.backgroundImages.length>0){
         let bgIndex = 0;
         setInterval(()=>{
@@ -124,7 +96,7 @@ $(document).ready(function(){
         }, 15000);
     }
 
-    // Тестовый режим
+    // тестовый режим
     setTimeout(()=>{
         if(!isGmod){
             isTest=true;
@@ -140,7 +112,6 @@ $(document).ready(function(){
                     DownloadingFile("Файл "+needed);
                 }
             },500);
-            SetStatusChanged("Тестирование..");
         }
     },1000);
 });
