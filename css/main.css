@@ -5,7 +5,10 @@ body {
   background-color: black;
 }
 
-nav, main { display: none; }
+nav,
+main {
+  display: none;
+}
 
 nav {
   background-color: rgba(0, 0, 0, 0.5);
@@ -39,7 +42,7 @@ h1 { margin-top: 10px; }
   height: 100%;
   position: fixed;
   background-color: rgba(0,0,0,0.5);
-  transition: left 0.3s linear;
+  transition: left 1s linear;
   left: 0;
 }
 
@@ -48,7 +51,7 @@ h1 { margin-top: 10px; }
   top: 40%;
   width: 100%;
   position: absolute;
-  text-shadow: none;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
 }
 
 .under-nav {

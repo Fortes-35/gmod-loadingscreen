@@ -123,7 +123,7 @@ $(document).ready(function(){
         }, 30000);
     }
 
-    // Тестовый режим
+    // Режим теста
     setTimeout(()=>{
         if(!isGmod){
             isTest=true;
