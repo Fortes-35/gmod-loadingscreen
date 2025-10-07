@@ -73,9 +73,14 @@ function loadBackground(){
     }
 }
 
-function setLoad(p){
-    $(".overhaul").css("left", p+"%");
+function setLoad(percent){
+    if(percent < 0) percent = 0;
+    $(".overhaul").css({
+        transform: "translateX(" + percent + "%)",
+        opacity: 1 - percent/100
+    });
 }
+
 
 var permanent = false;
 function announce(message, ispermanent){
