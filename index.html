@@ -8,11 +8,12 @@
     document.write('<link rel="stylesheet" href="css/main.css?' + Math.random() + '">');
   </script>
   <link href="https://fonts.googleapis.com/css?family=Ubuntu|Ubuntu+Condensed|Ubuntu+Mono&display=swap" rel="stylesheet"/>
-  <title>Загрузка сервера | By Fortes</title>
+  <title>Загрузка сервера | By Exsite</title>
 </head>
 <body>
   <div class="background"></div>
   <div class="overhaul"></div>
+
   <nav>
     <div id="announcement"></div>
     <div id="serverinfo">
@@ -21,15 +22,18 @@
     </div>
   </nav>
 
+  <div id="debug"></div>
+
   <main>
     <div class="title">
       <h2>Добро пожаловать на,</h2>
       <h1 id="title"></h1>
-      <div id="status">Загрузка...</div>
-      <div id="history"></div>
+      <div id="loading-text">Загрузка...</div> <!-- показывается изначально -->
+      <div id="history"></div> <!-- здесь появляются реальные файлы -->
     </div>
 
-    <div class="lower-line"></div>
+    <div class="under-nav"></div>
+    <div class="loading-box"></div>
     <img class="spinner" src="" alt="Загрузка...">
   </main>
 

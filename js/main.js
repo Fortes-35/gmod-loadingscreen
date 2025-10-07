@@ -24,7 +24,6 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
 function SetFilesTotal(total){
     totalCalled = true;
     totalFiles = total;
-    debug("Всего файлов: "+total);
 }
 
 function SetFilesNeeded(needed){
@@ -35,18 +34,33 @@ function SetFilesNeeded(needed){
 }
 
 function DownloadingFile(filename){
-    if(!filename) return; // Только реальные файлы
+    filename = filename.replace("'", "").replace("?","");
     downloadingFileCalled = true;
+
+    // скрываем "Загрузка..." когда начинается реальная загрузка файлов
+    $("#loading-text").fadeOut(300);
+
     $("#history").prepend('<div class="history-item">'+filename+'</div>');
-    $("#status").text("Загрузка: " + filename).show();
+    $(".history-item").each((i,el)=>{
+        if(i>10) $(el).remove();
+        $(el).css("opacity",""+(1-i*0.1));
+    });
 }
 
+var allow_increment = true;
 function SetStatusChanged(status){
-    debug(status);
-    if(status==="Workshop Complete" || status==="Client info sent!" || status==="Starting Lua..."){
-        $("#status").text("Загрузка завершена!");
-        setLoad(100);
+    if(downloadingFileCalled){
+        $("#history").prepend('<div class="history-item">'+status+'</div>');
+        $(".history-item").each((i,el)=>{
+            if(i>10) $(el).remove();
+            $(el).css("opacity",""+(1-i*0.1));
+        });
     }
+
+    if(status==="Workshop завершена"){ allow_increment=false; setLoad(80); }
+    else if(status==="Информация о клиенте отправлена!") { allow_increment=false; setLoad(95); }
+    else if(status==="Запуск Lua...") { setLoad(100); }
+    else { if(allow_increment){ percentage += 0.1; setLoad(percentage); } }
 }
 
 function loadAll(){
@@ -63,10 +77,12 @@ function setLoad(p){
     $(".overhaul").css("left", p+"%");
 }
 
-function debug(message){
-    if(Config.enableDebug){
-        console.log(message);
+var permanent = false;
+function announce(message, ispermanent){
+    if(Config.enableAnnouncements && !permanent){
+        $("#announcement").hide().html(message).fadeIn();
     }
+    if(ispermanent) permanent=true;
 }
 
 $(document).ready(function(){
@@ -79,14 +95,46 @@ $(document).ready(function(){
                .css({width:Config.spinnerSize+"px",height:Config.spinnerSize+"px"});
     }
 
+    // Объявления
+    if(Config.announceMessages && Config.enableAnnouncements && Config.announcementLength){
+        if(Config.announceMessages.length>0){
+            var i=0;
+            setInterval(()=>{ 
+                announce(Config.announceMessages[i]); 
+                i++; 
+                if(i>Config.announceMessages.length-1)i=0; 
+            }, Config.announcementLength);
+        }
+    }
+
     // Смена фоновых изображений каждые 15 секунд
     if(Config.backgroundImages && Config.backgroundImages.length>0){
         let bgIndex = 0;
         setInterval(()=>{
             bgIndex = (bgIndex+1) % Config.backgroundImages.length;
-            $(".background").fadeOut(1000, function(){
-                $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(1000);
+            $(".background").fadeOut(2000, function(){
+                $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(2000);
             });
         }, 15000);
     }
+
+    // Тестовый режим
+    setTimeout(()=>{
+        if(!isGmod){
+            isTest=true;
+            loadAll();
+            GameDetails("Название сервера","URL сервера","Карта1","Макс. игроков","SteamID","Gamemode","5");
+            var totalTestFiles=100;
+            SetFilesTotal(totalTestFiles);
+            var needed=totalTestFiles;
+            setInterval(()=>{
+                if(needed>0){
+                    needed--;
+                    SetFilesNeeded(needed);
+                    DownloadingFile("Файл "+needed);
+                }
+            },500);
+            SetStatusChanged("Тестирование..");
+        }
+    },1000);
 });
