@@ -6,6 +6,7 @@ var totalFiles = 50;
 var totalCalled = false;
 var downloadingFileCalled = false;
 var percentage = 0;
+var lastPercentage = 0;
 
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode, playersOnline) {
     isGmod = true;
@@ -35,10 +36,13 @@ function SetFilesNeeded(needed){
 }
 
 function DownloadingFile(filename){
+    if(!filename) return;
     filename = filename.replace("'", "").replace("?","");
     downloadingFileCalled = true;
+
     $("#history").prepend('<div class="history-item">'+filename+'</div>');
-    $(".history-item").each((i,el)=>{
+
+    $(".history-item").each(function(i, el){
         if(i>10) $(el).remove();
         $(el).css("opacity",""+(1-i*0.1));
     });
@@ -72,9 +76,10 @@ function loadBackground(){
 }
 
 function setLoad(p){
+    if(p < lastPercentage) return;
+    lastPercentage = p;
     $(".overhaul").css("transform", "translateX("+p+"%)");
 }
-
 
 var permanent = false;
 function announce(message, ispermanent){
@@ -94,14 +99,12 @@ function debug(message){
 $(document).ready(function(){
     loadBackground();
 
-    // Спиннер
     var spinner = $(".spinner");
     if(spinner.length){
         spinner.attr("src","images/"+Config.spinnerImage)
                .css({width:Config.spinnerSize+"px",height:Config.spinnerSize+"px"});
     }
 
-    // Объявления
     if(Config.announceMessages && Config.enableAnnouncements && Config.announcementLength){
         if(Config.announceMessages.length>0){
             var i=0;
@@ -113,7 +116,6 @@ $(document).ready(function(){
         }
     }
 
-    // Смена фоновых изображений каждые 30 секунд
     if(Config.backgroundImages && Config.backgroundImages.length>0){
         let bgIndex = 0;
         setInterval(()=>{
@@ -124,7 +126,7 @@ $(document).ready(function(){
         }, 30000);
     }
 
-    // Режим теста (без GMod)
+    // Тестовый режим для проверки
     setTimeout(()=>{
         if(!isGmod){
             isTest=true;
