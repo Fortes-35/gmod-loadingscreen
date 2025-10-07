@@ -34,31 +34,18 @@ function SetFilesNeeded(needed){
     }
 }
 
-function DownloadingFile(filename){
-    if(!filename) return; // показываем только реально загружаемые файлы
-    filename = filename.replace("'", "").replace("?","");
-    downloadingFileCalled = true;
-    $("#history").prepend('<div class="history-item">'+filename+'</div>');
+var allow_increment = true;
+function SetStatusChanged(status){
+    $("#history").prepend('<div class="history-item">'+status+'</div>');
     $(".history-item").each((i,el)=>{
         if(i>10) $(el).remove();
         $(el).css("opacity",""+(1-i*0.1));
     });
-}
 
-var allow_increment = true;
-function SetStatusChanged(status){
     if(status==="Workshop завершена"){ allow_increment=false; setLoad(80); }
     else if(status==="Информация о клиенте отправлена!") { allow_increment=false; setLoad(95); }
     else if(status==="Запуск Lua...") { setLoad(100); }
     else { if(allow_increment){ percentage += 0.1; setLoad(percentage); } }
-
-    if(downloadingFileCalled) {
-        $("#history").prepend('<div class="history-item">'+status+'</div>');
-        $(".history-item").each((i,el)=>{
-            if(i>10) $(el).remove();
-            $(el).css("opacity",""+(1-i*0.1));
-        });
-    }
 }
 
 function loadAll(){
@@ -100,7 +87,7 @@ $(document).ready(function(){
     var spinner = $(".spinner");
     if(spinner.length){
         spinner.attr("src","images/"+Config.spinnerImage)
-               .css({width:Config.spinnerSize+"px", height:Config.spinnerSize+"px"});
+               .css({width:Config.spinnerSize+"px",height:Config.spinnerSize+"px"});
     }
 
     // Объявления
@@ -115,7 +102,7 @@ $(document).ready(function(){
         }
     }
 
-    // Смена фоновых изображений каждые 30 секунд
+    // Смена фоновых изображений каждые 15 секунд
     if(Config.backgroundImages && Config.backgroundImages.length>0){
         let bgIndex = 0;
         setInterval(()=>{
@@ -123,10 +110,10 @@ $(document).ready(function(){
             $(".background").fadeOut(2000, function(){
                 $(this).css("background-image",'url("images/'+Config.backgroundImages[bgIndex]+'")').fadeIn(2000);
             });
-        }, 30000);
+        }, 15000);
     }
 
-    // Тестовый режим (если не Gmod)
+    // Режим теста
     setTimeout(()=>{
         if(!isGmod){
             isTest=true;
